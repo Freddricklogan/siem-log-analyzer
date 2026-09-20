@@ -1,0 +1,359 @@
+/* SIEM Log Analyzer — demo-specific styles. Tokens come from exec-shell.css. */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.control__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.control select,
+.control input[type='text'] {
+  padding: 8px 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.84rem;
+  min-width: 160px;
+}
+
+.control select:hover,
+.control input[type='text']:hover {
+  border-color: var(--accent);
+}
+
+.controls__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+  align-self: end;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  min-width: 0;
+}
+
+.panel__title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.panel__sub {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.chart-box {
+  position: relative;
+  height: 280px;
+}
+
+.severity {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.severity--critical {
+  color: #ffb4ae;
+  background: rgba(248, 81, 73, 0.16);
+  border-color: rgba(248, 81, 73, 0.5);
+}
+.severity--high {
+  color: #f0c674;
+  background: rgba(210, 153, 34, 0.16);
+  border-color: rgba(210, 153, 34, 0.5);
+}
+.severity--medium {
+  color: #9ecbff;
+  background: rgba(88, 166, 255, 0.16);
+  border-color: rgba(88, 166, 255, 0.5);
+}
+.severity--low {
+  color: #b7c2d4;
+  background: rgba(139, 152, 176, 0.16);
+  border-color: rgba(139, 152, 176, 0.5);
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+table.data th,
+table.data td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+table.data th {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+table.data td.mono {
+  font-family: var(--shell-mono);
+  font-size: 0.76rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.geo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.geo__cell {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  text-align: center;
+}
+
+.geo__count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.geo__name {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.tactic {
+  margin-bottom: 12px;
+}
+
+.tactic__name {
+  font-size: 0.74rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.technique {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 0.8rem;
+  padding: 3px 0;
+}
+
+.technique__id {
+  font-family: var(--shell-mono);
+  font-size: 0.72rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #d2a8ff;
+  flex: none;
+}
+
+.technique__count {
+  color: var(--muted);
+  font-size: 0.74rem;
+  margin-left: auto;
+  flex: none;
+}
+
+.finding {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--danger);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--panel-2);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.finding--high {
+  border-left-color: var(--warn);
+}
+.finding--medium {
+  border-left-color: var(--accent);
+}
+.finding--low {
+  border-left-color: var(--muted);
+}
+
+.finding__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.finding__title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.finding__detail {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.finding__evidence {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: var(--shell-mono);
+}
+
+.feed {
+  max-height: 360px;
+  overflow-y: auto;
+  font-size: 0.76rem;
+}
+
+.feed__row {
+  display: grid;
+  grid-template-columns: 70px 84px 108px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 5px 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed__time,
+.feed__ip {
+  font-family: var(--shell-mono);
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.feed__source {
+  color: var(--accent);
+  font-size: 0.72rem;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.report {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: var(--shell-mono);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: var(--text);
+  margin: 0;
+}
+
+.notice {
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+.notice strong {
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  .controls__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+  .controls__actions .exec-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .control select,
+  .control input[type='text'] {
+    min-width: 0;
+    width: 100%;
+  }
+  .control {
+    flex: 1 1 100%;
+  }
+  .feed__row {
+    grid-template-columns: 64px 80px;
+    grid-template-areas: 'time sev' 'src src' 'msg msg';
+  }
+  .feed__time {
+    grid-area: time;
+  }
+  .feed__source {
+    grid-area: src;
+  }
+  .feed__msg {
+    grid-area: msg;
+  }
+}
