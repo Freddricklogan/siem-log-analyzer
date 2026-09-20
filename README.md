@@ -31,6 +31,8 @@ coincidental co-occurrence. The output is an analyst deliverable: a ranked
 incident report with evidence and recommended actions. A reviewer sees the
 whole path in thirty seconds, with no account, no backend and no install.
 
+**[→ Read the full case study](docs/CASE_STUDY.md)**
+
 | Outcome | How this repo delivers it |
 | --- | --- |
 | Alert volume reduced to a short, ordered incident list | Six correlation rules collapse hundreds of events into at most eight ranked findings, severity-first |
