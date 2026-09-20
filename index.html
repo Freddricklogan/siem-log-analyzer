@@ -1,358 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIEM Log Analyzer</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#ffffff;--bg2:#ffffff;--bg3:#ffffff;--accent:#1f4e8c;--text:#14263f;--text2:#5a6b86;--danger:#c0392b;--warning:#b5842a;--success:#1f4e8c;--info:#1f4e8c;--purple:#1f4e8c;--radius:8px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.header{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:20px 28px;border-bottom:1px solid rgba(31, 78, 140,.1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.header h1{font-size:1.5rem;color:#14263f}.header h1 span{color:var(--accent)}
-.header-right{display:flex;align-items:center;gap:12px}
-.badge{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600}
-.badge-live{background:rgba(31, 78, 140,.15);color:var(--success);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.controls{display:flex;gap:8px;padding:12px 28px;background:var(--bg2);flex-wrap:wrap;align-items:center;border-bottom:1px solid rgba(31, 78, 140,.05)}
-select,input[type=text]{padding:8px 12px;background:var(--bg);border:1px solid rgba(31, 78, 140,.15);border-radius:var(--radius);color:var(--text);font-size:.82rem;outline:none}
-select:focus,input:focus{border-color:var(--accent)}
-.btn{padding:8px 16px;border:none;border-radius:var(--radius);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--accent);color:var(--bg)}
-.btn-primary:hover{background:#1f4e8c}
-.btn-secondary{background:rgba(31, 78, 140,.1);color:var(--accent);border:1px solid rgba(31, 78, 140,.2)}
-.btn-danger{background:rgba(192, 57, 43,.15);color:var(--danger)}
-.container{padding:20px 28px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
-@media(max-width:1024px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
-.card{background:var(--bg2);border:1px solid rgba(31, 78, 140,.08);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
-.card h2{font-size:.95rem;color:#14263f;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.stat-card{text-align:center;padding:20px}
-.stat-card .value{font-size:1.8rem;font-weight:700;margin-bottom:4px}
-.stat-card .label{font-size:.75rem;color:var(--text2)}
-.stat-card .change{font-size:.72rem;margin-top:4px}
-.severity{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:600}
-.sev-critical{background:rgba(192, 57, 43,.15);color:var(--danger)}
-.sev-high{background:rgba(181, 132, 42,.15);color:var(--warning)}
-.sev-medium{background:rgba(31, 78, 140,.15);color:var(--info)}
-.sev-low{background:rgba(31, 78, 140,.15);color:var(--success)}
-.chart-box{position:relative;height:280px}
-table{width:100%;border-collapse:collapse;font-size:.82rem}
-th,td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(31, 78, 140,.06)}
-th{color:var(--accent);font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
-.log-feed{max-height:350px;overflow-y:auto;font-family:monospace;font-size:.78rem}
-.log-entry{padding:6px 10px;border-bottom:1px solid rgba(31, 78, 140,.04);display:flex;gap:10px;align-items:flex-start}
-.log-entry:hover{background:rgba(31, 78, 140,.03)}
-.log-time{color:var(--text2);white-space:nowrap;min-width:75px}
-.log-src{color:var(--info);min-width:110px}
-.log-msg{flex:1;word-break:break-word}
-.mitre-tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:.68rem;margin:2px;background:rgba(31, 78, 140,.12);color:var(--purple)}
-.geo-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-.geo-item{background:var(--bg);border-radius:var(--radius);padding:10px;text-align:center}
-.geo-item .country{font-weight:600;font-size:.85rem}
-.geo-item .count{color:var(--accent);font-size:1.1rem;font-weight:700}
-.correlation-group{background:var(--bg);border-left:3px solid var(--danger);border-radius:0 var(--radius) var(--radius) 0;padding:12px;margin-bottom:10px}
-.correlation-group h4{font-size:.85rem;color:#14263f;margin-bottom:6px}
-.correlation-group p{font-size:.78rem;color:var(--text2)}
-.export-area{background:var(--bg);border:1px solid rgba(31, 78, 140,.1);border-radius:var(--radius);padding:14px;font-family:monospace;font-size:.78rem;max-height:300px;overflow-y:auto;white-space:pre-wrap;color:var(--text2)}
-</style>
-<link rel="canonical" href="https://freddricklogan.github.io/siem-log-analyzer/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>SIEM Log Analyzer — detection engineering sandbox</title>
+<meta name="description" content="A browser-based SIEM simulation: synthetic security telemetry is normalized, scored against eight detection rules, mapped to MITRE ATT&amp;CK and correlated into multi-stage incidents. Runs entirely client-side on simulated data.">
 <meta name="robots" content="index, follow">
-<meta name="author" content="Freddrick Logan">
+<link rel="canonical" href="https://freddricklogan.github.io/siem-log-analyzer/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1220'/%3E%3Cpath d='M16 4l10 4v6c0 6-4.5 10-10 12C10.5 24 6 20 6 14V8z' fill='none' stroke='%2358a6ff' stroke-width='2'/%3E%3Cpath d='M11 15l3.5 3.5L21 12' fill='none' stroke='%233fb950' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Freddrick Logan">
-<meta property="og:title" content="SIEM Log Analyzer">
-<meta property="og:description" content="SIEM Log Analyzer">
+<meta property="og:title" content="SIEM Log Analyzer — detection engineering sandbox">
+<meta property="og:description" content="Normalize, detect, map to MITRE ATT&amp;CK and correlate synthetic security telemetry — entirely in the browser.">
 <meta property="og:url" content="https://freddricklogan.github.io/siem-log-analyzer/">
-<meta property="og:image" content="https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?auto=format&fit=crop&w=1200&h=630&q=80">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SIEM Log Analyzer">
-<meta name="twitter:description" content="SIEM Log Analyzer">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?auto=format&fit=crop&w=1200&h=630&q=80">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SIEM Log Analyzer","description":"SIEM Log Analyzer","url":"https://freddricklogan.github.io/siem-log-analyzer/","image":"https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?auto=format&fit=crop&w=1200&h=630&q=80","applicationCategory":"WebApplication","operatingSystem":"Any (Web)","author":{"@type":"Person","name":"Freddrick Logan","url":"https://fredlogan.phd"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="twitter:title" content="SIEM Log Analyzer — detection engineering sandbox">
+<meta name="twitter:description" content="Normalize, detect, map to MITRE ATT&amp;CK and correlate synthetic security telemetry — entirely in the browser.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap">
+<link rel="stylesheet" href="src/exec-shell.css">
+<link rel="stylesheet" href="src/app.css">
+
+<!-- Chart.js, version-pinned with a subresource-integrity hash computed from the
+     exact published artifact. vendor/chart.min.js is the byte-identical local
+     fallback used when the CDN is unreachable (see src/charts.js). -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"
+        integrity="sha384-9MhbyIRcBVQiiC7FSd7T38oJNj2Zh+EfxS7/vjhBi4OOT78NlHSnzM31EZRWR1LZ"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SIEM Log Analyzer","description":"A browser-based SIEM simulation: normalize, detect, map to MITRE ATT&CK and correlate synthetic security telemetry.","url":"https://freddricklogan.github.io/siem-log-analyzer/","applicationCategory":"SecurityApplication","operatingSystem":"Any (Web)","author":{"@type":"Person","name":"Freddrick Logan","url":"https://fredlogan.phd"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
 </head>
 <body>
-<div class="header">
-  <div><h1>SIEM <span>Log Analyzer</span></h1><p style="color:var(--text2);font-size:.82rem;margin-top:4px">Security Information & Event Management Dashboard</p></div>
-  <div class="header-right">
-    <span class="badge badge-live">LIVE MONITORING</span>
-    <span style="color:var(--text2);font-size:.78rem" id="clock"></span>
+
+<main id="demo-root" class="exec-main">
+
+  <p class="notice">
+    <strong>Simulation.</strong> Every event on this page is generated locally by a seeded
+    pseudo-random generator. There is no backend, no ingestion pipeline and no real network
+    telemetry — the detection, ATT&amp;CK mapping and correlation logic is real, the data is not.
+  </p>
+
+  <section class="controls" id="controls" aria-label="Analysis filters">
+    <div class="control">
+      <label class="control__label" for="filter-severity">Severity</label>
+      <select id="filter-severity">
+        <option value="all">All severities</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="control">
+      <label class="control__label" for="filter-type">Detection</label>
+      <select id="filter-type">
+        <option value="all">All detections</option>
+        <option value="brute_force">Brute force</option>
+        <option value="sql_injection">SQL injection</option>
+        <option value="xss">Cross-site scripting</option>
+        <option value="port_scan">Service discovery</option>
+        <option value="ddos">Denial of service</option>
+        <option value="privilege_escalation">Privilege escalation</option>
+        <option value="malware_c2">Command &amp; control</option>
+        <option value="data_exfiltration">Data exfiltration</option>
+      </select>
+    </div>
+    <div class="control">
+      <label class="control__label" for="filter-ip">Source IP contains</label>
+      <input type="text" id="filter-ip" placeholder="e.g. 198.51" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="control">
+      <label class="control__label" for="filter-window">Window</label>
+      <select id="filter-window">
+        <option value="1h">Last hour</option>
+        <option value="6h">Last 6 hours</option>
+        <option value="24h" selected>Last 24 hours</option>
+        <option value="7d">Last 7 days</option>
+      </select>
+    </div>
+    <div class="controls__actions">
+      <button type="button" class="exec-btn exec-btn--primary" id="btn-generate">Ingest sample batch</button>
+      <button type="button" class="exec-btn" id="btn-export">Export incident report</button>
+      <button type="button" class="exec-btn" id="btn-clear">Clear</button>
+    </div>
+  </section>
+
+  <div class="grid grid--2">
+    <section class="panel" id="panel-timeline" aria-label="Threat timeline">
+      <h2 class="panel__title">Threat timeline</h2>
+      <p class="panel__sub">Stacked severity counts on absolute time buckets across the selected window.</p>
+      <div class="chart-box"><canvas id="timeline-chart" aria-label="Stacked severity counts over time" role="img"></canvas></div>
+    </section>
+    <section class="panel" id="panel-distribution" aria-label="Detection distribution">
+      <h2 class="panel__title">Detection distribution</h2>
+      <p class="panel__sub">Share of events per detection rule. Each rule keeps a stable colour.</p>
+      <div class="chart-box"><canvas id="attack-chart" aria-label="Share of events per detection rule" role="img"></canvas></div>
+    </section>
   </div>
-</div>
-<div class="controls">
-  <select id="filter-severity"><option value="all">All Severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-  <select id="filter-type"><option value="all">All Attack Types</option><option value="brute_force">Brute Force</option><option value="sql_injection">SQL Injection</option><option value="xss">XSS</option><option value="port_scan">Port Scanning</option><option value="ddos">DDoS</option><option value="privilege_escalation">Privilege Escalation</option></select>
-  <input type="text" id="filter-ip" placeholder="Filter by IP...">
-  <select id="filter-time"><option value="1h">Last 1 Hour</option><option value="6h">Last 6 Hours</option><option value="24h" selected>Last 24 Hours</option><option value="7d">Last 7 Days</option></select>
-  <button class="btn btn-primary" onclick="generateLogs()">Generate Sample Data</button>
-  <button class="btn btn-secondary" onclick="exportReport()">Export Report</button>
-  <button class="btn btn-danger" onclick="clearLogs()">Clear</button>
-</div>
-<div class="container">
-  <div class="grid-4" id="stat-cards">
-    <div class="card stat-card"><div class="value" style="color:var(--danger)" id="stat-critical">0</div><div class="label">Critical Alerts</div></div>
-    <div class="card stat-card"><div class="value" style="color:var(--warning)" id="stat-high">0</div><div class="label">High Alerts</div></div>
-    <div class="card stat-card"><div class="value" style="color:var(--accent)" id="stat-total">0</div><div class="label">Total Events</div></div>
-    <div class="card stat-card"><div class="value" style="color:var(--info)" id="stat-sources">0</div><div class="label">Unique Sources</div></div>
+
+  <div class="grid grid--3">
+    <section class="panel" id="panel-geo" aria-label="Geographic origins">
+      <h2 class="panel__title">Geographic origins</h2>
+      <p class="panel__sub">Event volume by claimed origin country.</p>
+      <div class="geo" id="geo-map"></div>
+    </section>
+    <section class="panel" id="panel-sources" aria-label="Top threat sources">
+      <h2 class="panel__title">Top threat sources</h2>
+      <p class="panel__sub">Score is deterministic: severity weight + volume + breadth + kill-chain span.</p>
+      <div class="table-scroll">
+        <table class="data">
+          <thead>
+            <tr><th scope="col">Source IP</th><th scope="col">Origin</th><th scope="col">Events</th><th scope="col">Score</th><th scope="col">Severity</th></tr>
+          </thead>
+          <tbody id="top-sources"></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="panel" id="panel-mitre" aria-label="MITRE ATT&amp;CK coverage">
+      <h2 class="panel__title">MITRE ATT&amp;CK coverage</h2>
+      <p class="panel__sub">Detections rolled up by tactic, then technique.</p>
+      <div id="mitre-map"></div>
+    </section>
   </div>
-  <div class="grid-2">
-    <div class="card"><h2>Threat Timeline</h2><div class="chart-box"><canvas id="timeline-chart"></canvas></div></div>
-    <div class="card"><h2>Attack Type Distribution</h2><div class="chart-box"><canvas id="attack-chart"></canvas></div></div>
+
+  <div class="grid grid--2">
+    <section class="panel" id="panel-correlations" aria-label="Alert correlation">
+      <h2 class="panel__title">Alert correlation engine</h2>
+      <p class="panel__sub">Order-aware, multi-event rules. Co-occurrence alone is not a chain.</p>
+      <div id="correlations" aria-live="polite"></div>
+    </section>
+    <section class="panel" id="panel-feed" aria-label="Event feed">
+      <h2 class="panel__title">Event feed</h2>
+      <p class="panel__sub">Most recent 60 matching events.</p>
+      <div class="feed" id="log-feed" tabindex="0"></div>
+    </section>
   </div>
-  <div class="grid-3">
-    <div class="card"><h2>Geographic Threat Origins</h2><div class="geo-map" id="geo-map"></div></div>
-    <div class="card"><h2>Top Attacking IPs</h2><table><thead><tr><th>IP Address</th><th>Events</th><th>Threat Score</th><th>Severity</th></tr></thead><tbody id="top-ips"></tbody></table></div>
-    <div class="card"><h2>MITRE ATT&CK Mapping</h2><div id="mitre-map"></div></div>
-  </div>
-  <div class="grid-2">
-    <div class="card"><h2>Alert Correlation Engine</h2><div id="correlations"></div></div>
-    <div class="card"><h2>Live Event Feed</h2><div class="log-feed" id="log-feed"></div></div>
-  </div>
-  <div class="card" style="margin-top:20px;display:none" id="report-card">
-    <h2>Incident Report</h2>
-    <div class="export-area" id="report-output"></div>
-  </div>
-</div>
-<script>
-// Data storage
-let events = [];
-let timelineChart, attackChart;
 
-// Attack definitions
-const ATTACKS = [
-  {type:'brute_force',name:'Brute Force',severity:'high',mitre:'T1110',tactic:'Credential Access',msgs:['Failed login attempt','Multiple authentication failures','Password spray detected','SSH brute force attempt']},
-  {type:'sql_injection',name:'SQL Injection',severity:'critical',mitre:'T1190',tactic:'Initial Access',msgs:['SQL injection in login form','Union-based SQLi detected','Blind SQL injection attempt','Database exfiltration via SQLi']},
-  {type:'xss',name:'Cross-Site Scripting',severity:'medium',mitre:'T1189',tactic:'Initial Access',msgs:['Reflected XSS in search parameter','Stored XSS payload detected','DOM-based XSS attempt','Script injection blocked']},
-  {type:'port_scan',name:'Port Scanning',severity:'low',mitre:'T1046',tactic:'Discovery',msgs:['Sequential port scan detected','SYN scan from external host','Service enumeration attempt','Nmap fingerprint detected']},
-  {type:'ddos',name:'DDoS Attack',severity:'critical',mitre:'T1498',tactic:'Impact',msgs:['Volumetric DDoS detected','SYN flood attack','HTTP flood — 50K req/s','Amplification attack detected']},
-  {type:'privilege_escalation',name:'Privilege Escalation',severity:'critical',mitre:'T1068',tactic:'Privilege Escalation',msgs:['Sudo exploit attempt','Kernel exploit detected','SUID binary exploitation','Vertical privilege escalation']}
-];
-const COUNTRIES = ['United States','China','Russia','Brazil','India','Germany','Iran','North Korea','Romania','Nigeria','Ukraine','Vietnam','Indonesia','Turkey','Netherlands'];
-const SOURCES = ['Firewall','IDS/IPS','Auth Server','Web Server','DNS Server','Mail Server','Endpoint Agent'];
+  <section class="panel" id="report-panel" aria-label="Incident report" hidden>
+    <h2 class="panel__title">Incident report</h2>
+    <p class="panel__sub">Generated from the events currently in view.</p>
+    <pre class="report" id="report-output"></pre>
+  </section>
 
-function randomIP(){return `${Math.floor(Math.random()*223)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`}
-function randomEl(arr){return arr[Math.floor(Math.random()*arr.length)]}
+</main>
 
-function generateLogs(){
-  const count = 200 + Math.floor(Math.random()*300);
-  const now = Date.now();
-  for(let i=0;i<count;i++){
-    const attack = randomEl(ATTACKS);
-    const ts = new Date(now - Math.random()*86400000);
-    events.push({
-      timestamp:ts,
-      type:attack.type,
-      name:attack.name,
-      severity:attack.severity,
-      mitre:attack.mitre,
-      tactic:attack.tactic,
-      message:randomEl(attack.msgs),
-      sourceIP:randomIP(),
-      source:randomEl(SOURCES),
-      country:randomEl(COUNTRIES),
-      threatScore:Math.floor(Math.random()*100)
-    });
-  }
-  events.sort((a,b)=>b.timestamp-a.timestamp);
-  updateDashboard();
-}
-
-function clearLogs(){events=[];updateDashboard()}
-
-function getFiltered(){
-  const sev=document.getElementById('filter-severity').value;
-  const type=document.getElementById('filter-type').value;
-  const ip=document.getElementById('filter-ip').value.trim();
-  const time=document.getElementById('filter-time').value;
-  const now=Date.now();
-  const ranges={
-    '1h':3600000,'6h':21600000,'24h':86400000,'7d':604800000
-  };
-  return events.filter(e=>{
-    if(sev!=='all'&&e.severity!==sev)return false;
-    if(type!=='all'&&e.type!==type)return false;
-    if(ip&&!e.sourceIP.includes(ip))return false;
-    if(now-e.timestamp.getTime()>ranges[time])return false;
-    return true;
-  });
-}
-
-function updateDashboard(){
-  const filtered=getFiltered();
-  // Stats
-  document.getElementById('stat-critical').textContent=filtered.filter(e=>e.severity==='critical').length;
-  document.getElementById('stat-high').textContent=filtered.filter(e=>e.severity==='high').length;
-  document.getElementById('stat-total').textContent=filtered.length;
-  document.getElementById('stat-sources').textContent=new Set(filtered.map(e=>e.sourceIP)).size;
-  updateTimeline(filtered);
-  updateAttackChart(filtered);
-  updateGeoMap(filtered);
-  updateTopIPs(filtered);
-  updateMitre(filtered);
-  updateCorrelations(filtered);
-  updateFeed(filtered);
-}
-
-function updateTimeline(data){
-  const hours={};
-  data.forEach(e=>{
-    const h=e.timestamp.getHours();
-    const key=h.toString().padStart(2,'0')+':00';
-    if(!hours[key])hours[key]={critical:0,high:0,medium:0,low:0};
-    hours[key][e.severity]++;
-  });
-  const labels=Object.keys(hours).sort();
-  const datasets=[
-    {label:'Critical',data:labels.map(l=>hours[l].critical),borderColor:'#c0392b',backgroundColor:'rgba(192, 57, 43,.2)',fill:true,tension:.3},
-    {label:'High',data:labels.map(l=>hours[l].high),borderColor:'#b5842a',backgroundColor:'rgba(181, 132, 42,.2)',fill:true,tension:.3},
-    {label:'Medium',data:labels.map(l=>hours[l].medium),borderColor:'#1f4e8c',backgroundColor:'rgba(31, 78, 140,.2)',fill:true,tension:.3},
-    {label:'Low',data:labels.map(l=>hours[l].low),borderColor:'#1f4e8c',backgroundColor:'rgba(31, 78, 140,.2)',fill:true,tension:.3}
-  ];
-  if(timelineChart)timelineChart.destroy();
-  timelineChart=new Chart(document.getElementById('timeline-chart'),{
-    type:'line',data:{labels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#5a6b86',font:{size:11}}}},
-      scales:{x:{ticks:{color:'#5a6b86'},grid:{color:'rgba(31, 78, 140,.05)'}},y:{beginAtZero:true,ticks:{color:'#5a6b86'},grid:{color:'rgba(31, 78, 140,.05)'}}}}
-  });
-}
-
-function updateAttackChart(data){
-  const counts={};
-  data.forEach(e=>{counts[e.name]=(counts[e.name]||0)+1});
-  const labels=Object.keys(counts);
-  const values=Object.values(counts);
-  const colors=['#c0392b','#b5842a','#1f4e8c','#1f4e8c','#1f4e8c','#1f4e8c'];
-  if(attackChart)attackChart.destroy();
-  attackChart=new Chart(document.getElementById('attack-chart'),{
-    type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#5a6b86',font:{size:11},padding:12}}}}
-  });
-}
-
-function updateGeoMap(data){
-  const countries={};
-  data.forEach(e=>{countries[e.country]=(countries[e.country]||0)+1});
-  const sorted=Object.entries(countries).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  document.getElementById('geo-map').innerHTML=sorted.map(([c,n])=>`<div class="geo-item"><div class="count">${n}</div><div class="country">${c}</div></div>`).join('');
-}
-
-function updateTopIPs(data){
-  const ips={};
-  data.forEach(e=>{
-    if(!ips[e.sourceIP])ips[e.sourceIP]={count:0,maxScore:0,severity:'low'};
-    ips[e.sourceIP].count++;
-    ips[e.sourceIP].maxScore=Math.max(ips[e.sourceIP].maxScore,e.threatScore);
-    const sevOrder={critical:4,high:3,medium:2,low:1};
-    if(sevOrder[e.severity]>sevOrder[ips[e.sourceIP].severity])ips[e.sourceIP].severity=e.severity;
-  });
-  const sorted=Object.entries(ips).sort((a,b)=>b[1].maxScore-a[1].maxScore).slice(0,8);
-  document.getElementById('top-ips').innerHTML=sorted.map(([ip,d])=>`<tr><td style="font-family:monospace">${ip}</td><td>${d.count}</td><td>${d.maxScore}</td><td><span class="severity sev-${d.severity}">${d.severity}</span></td></tr>`).join('');
-}
-
-function updateMitre(data){
-  const techniques={};
-  data.forEach(e=>{
-    const key=e.mitre;
-    if(!techniques[key])techniques[key]={id:e.mitre,name:e.name,tactic:e.tactic,count:0};
-    techniques[key].count++;
-  });
-  const sorted=Object.values(techniques).sort((a,b)=>b.count-a.count);
-  document.getElementById('mitre-map').innerHTML=sorted.map(t=>`<div style="margin-bottom:8px"><span class="mitre-tag">${t.id}</span> <span style="font-size:.82rem">${t.name}</span> <span style="color:var(--text2);font-size:.75rem">— ${t.tactic} (${t.count} events)</span></div>`).join('');
-}
-
-function updateCorrelations(data){
-  const groups=[];
-  // Group by IP with multiple attack types
-  const ipAttacks={};
-  data.forEach(e=>{
-    if(!ipAttacks[e.sourceIP])ipAttacks[e.sourceIP]=new Set();
-    ipAttacks[e.sourceIP].add(e.type);
-  });
-  Object.entries(ipAttacks).forEach(([ip,types])=>{
-    if(types.size>=2){
-      groups.push({title:`Multi-vector attack from ${ip}`,desc:`${types.size} attack types detected: ${[...types].join(', ')}. Possible coordinated campaign.`,severity:'critical'});
-    }
-  });
-  // Brute force followed by privilege escalation
-  const bruteIPs=new Set(data.filter(e=>e.type==='brute_force').map(e=>e.sourceIP));
-  const privIPs=new Set(data.filter(e=>e.type==='privilege_escalation').map(e=>e.sourceIP));
-  const overlap=[...bruteIPs].filter(ip=>privIPs.has(ip));
-  if(overlap.length>0){
-    groups.push({title:'Credential Compromise Chain',desc:`${overlap.length} IP(s) attempted brute force followed by privilege escalation. Possible successful credential theft.`,severity:'critical'});
-  }
-  // DDoS correlation
-  const ddosCount=data.filter(e=>e.type==='ddos').length;
-  if(ddosCount>20){
-    groups.push({title:'Distributed Denial of Service',desc:`${ddosCount} DDoS events from ${new Set(data.filter(e=>e.type==='ddos').map(e=>e.sourceIP)).size} sources. Coordinated volumetric attack suspected.`,severity:'high'});
-  }
-  document.getElementById('correlations').innerHTML=groups.length?groups.map(g=>`<div class="correlation-group"><h4><span class="severity sev-${g.severity}">${g.severity}</span> ${g.title}</h4><p>${g.desc}</p></div>`).join(''):'<p style="color:var(--text2);font-size:.85rem">Generate log data to see correlated alerts.</p>';
-}
-
-function updateFeed(data){
-  const recent=data.slice(0,50);
-  document.getElementById('log-feed').innerHTML=recent.map(e=>{
-    const t=e.timestamp;
-    const time=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0')+':'+t.getSeconds().toString().padStart(2,'0');
-    return `<div class="log-entry"><span class="log-time">${time}</span><span class="severity sev-${e.severity}">${e.severity}</span><span class="log-src">${e.source}</span><span class="log-msg">${e.message} <span style="color:var(--text2)">[${e.sourceIP}]</span></span></div>`;
-  }).join('');
-}
-
-function exportReport(){
-  const filtered=getFiltered();
-  const critical=filtered.filter(e=>e.severity==='critical');
-  const report=`SECURITY INCIDENT REPORT
-Generated: ${new Date().toISOString()}
-Period: ${document.getElementById('filter-time').value}
-
-EXECUTIVE SUMMARY
-==================
-Total Events Analyzed: ${filtered.length}
-Critical Alerts: ${critical.length}
-High Alerts: ${filtered.filter(e=>e.severity==='high').length}
-Medium Alerts: ${filtered.filter(e=>e.severity==='medium').length}
-Low Alerts: ${filtered.filter(e=>e.severity==='low').length}
-Unique Source IPs: ${new Set(filtered.map(e=>e.sourceIP)).size}
-
-ATTACK BREAKDOWN
-================
-${ATTACKS.map(a=>{const c=filtered.filter(e=>e.type===a.type).length;return c?`${a.name}: ${c} events (MITRE ${a.mitre})`:null}).filter(Boolean).join('\n')}
-
-TOP THREAT SOURCES
-==================
-${[...new Map(filtered.map(e=>[e.sourceIP,e])).values()].sort((a,b)=>b.threatScore-a.threatScore).slice(0,10).map((e,i)=>`${i+1}. ${e.sourceIP} (${e.country}) — Threat Score: ${e.threatScore}`).join('\n')}
-
-CRITICAL EVENTS
-===============
-${critical.slice(0,20).map(e=>`[${e.timestamp.toISOString()}] ${e.severity.toUpperCase()} | ${e.source} | ${e.message} | IP: ${e.sourceIP}`).join('\n')}
-
-RECOMMENDATIONS
-===============
-1. Block top threat source IPs at the perimeter firewall
-2. Review authentication logs for compromised credentials
-3. Update WAF rules to address detected injection patterns
-4. Investigate correlated events for active campaigns
-5. Escalate critical findings to the incident response team
-`;
-  document.getElementById('report-output').textContent=report;
-  document.getElementById('report-card').style.display='block';
-}
-
-// Filters
-['filter-severity','filter-type','filter-ip','filter-time'].forEach(id=>{
-  document.getElementById(id).addEventListener('change',updateDashboard);
-  document.getElementById(id).addEventListener('input',updateDashboard);
-});
-
-// Clock
-setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString()},1000);
-
-// Auto-generate on load
-generateLogs();
-</script>
-<footer id="app-copyright" style="text-align:center;padding:30px 20px;margin-top:48px;border-top:1px solid rgba(31,78,140,.18);background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;color:#5a6b86;font-size:.86rem"><div style="font-weight:700;font-size:1rem"><a href="https://github.com/Freddricklogan" style="color:#14263f;text-decoration:none">Freddrick Logan</a> <span style="color:#5a6b86;font-weight:400">&mdash; Technologist &amp; Education</span></div><div style="margin-top:8px">&copy; 2026 Freddrick Logan. All rights reserved.</div></footer>
-<a id="view-src" href="https://github.com/Freddricklogan/siem-log-analyzer" target="_blank" rel="noopener" title="View source on GitHub" style="position:fixed;right:14px;bottom:14px;z-index:99999;font:600 12px/1 -apple-system,system-ui,sans-serif;color:#ffffff;background:#1f4e8c;border-radius:999px;padding:10px 15px;text-decoration:none;box-shadow:0 3px 16px rgba(255, 255, 255,.45)">&#9654; View Source</a>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>
