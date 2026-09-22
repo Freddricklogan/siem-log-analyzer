@@ -1,3 +1,4 @@
+import { tokens } from './exec-shell.js';
 /**
  * Chart.js binding layer (DOM-facing).
  *
@@ -9,14 +10,14 @@
 
 const VENDOR_FALLBACK = 'vendor/chart.min.js';
 
-const AXIS_COLOR = '#8b98b0';
+const AXIS_COLOR = tokens().muted;
 const GRID_COLOR = 'rgba(34, 48, 77, 0.8)';
 
 const SEVERITY_SERIES = [
-  { key: 'critical', label: 'Critical', color: '#f85149' },
-  { key: 'high', label: 'High', color: '#d29922' },
-  { key: 'medium', label: 'Medium', color: '#58a6ff' },
-  { key: 'low', label: 'Low', color: '#8b98b0' }
+  { key: 'critical', label: 'Critical', color: tokens().danger },
+  { key: 'high', label: 'High', color: tokens().warn },
+  { key: 'medium', label: 'Medium', color: tokens().accent },
+  { key: 'low', label: 'Low', color: tokens().muted }
 ];
 
 let loadPromise = null;

@@ -1,3 +1,4 @@
+import { tokens } from './exec-shell.js';
 /**
  * Filtering, aggregation and scoring over normalized events.
  * Pure: every function takes its inputs explicitly, including `now`.
@@ -136,7 +137,7 @@ export function attackDistribution(events) {
       type,
       name: getRule(type)?.name ?? type,
       count,
-      color: TYPE_COLORS[type] ?? '#8b98b0'
+      color: TYPE_COLORS[type] ?? tokens().muted
     }))
     .sort((a, b) => b.count - a.count || a.type.localeCompare(b.type));
 }
