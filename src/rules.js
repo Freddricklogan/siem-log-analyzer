@@ -1,3 +1,4 @@
+import { tokens } from './exec-shell.js';
 /**
  * Detection rule catalogue and MITRE ATT&CK mapping.
  *
@@ -152,14 +153,14 @@ export const ATTACK_TYPES = DETECTION_RULES.map((r) => r.type);
 
 /** Stable, severity-aware colour per attack type (never positional). */
 export const TYPE_COLORS = Object.freeze({
-  brute_force: '#d29922',
-  sql_injection: '#f85149',
-  xss: '#58a6ff',
-  port_scan: '#8b98b0',
-  ddos: '#ff7b72',
-  privilege_escalation: '#d2a8ff',
-  malware_c2: '#3fb950',
-  data_exfiltration: '#f0883e'
+  brute_force: tokens().series[0],
+  sql_injection: tokens().series[3],
+  xss: tokens().series[1],
+  port_scan: tokens().muted,
+  ddos: tokens().series[5],
+  privilege_escalation: tokens().series[4],
+  malware_c2: tokens().series[2],
+  data_exfiltration: tokens().series[6]
 });
 
 const RULES_BY_TYPE = new Map(DETECTION_RULES.map((r) => [r.type, r]));

@@ -140,6 +140,7 @@ function setFilters({ severity = 'all', type = 'all', ip = '', window: win = '24
 /* -------------------------------------------------------------------------- */
 
 const shell = mountExecShell({
+  theme: 'graphite',
   title: 'SIEM Log Analyzer',
   tagline:
     'A browser-based detection-engineering sandbox: synthetic security telemetry is ' +
