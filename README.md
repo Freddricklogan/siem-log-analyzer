@@ -38,7 +38,7 @@ whole path in thirty seconds, with no account, no backend and no install.
 | Alert volume reduced to a short, ordered incident list | Six correlation rules collapse hundreds of events into at most eight ranked findings, severity-first |
 | Risk ranking a reviewer can actually defend | `computeThreatScore()` is a bounded, deterministic function of severity, log-scaled volume, attack breadth and kill-chain span — not a random number |
 | Coverage expressed in a language the business already buys | Every detection carries a MITRE ATT&CK technique and tactic; coverage rolls up into the matrix |
-| Findings that survive review | 95 unit tests over the pure logic at 99.78% statement coverage; order-dependence of every chain rule is asserted explicitly |
+| Findings that survive review | 103 unit tests over the pure logic at 99.78% statement coverage; order-dependence of every chain rule is asserted explicitly |
 | Zero-trust demo surface | `default-src 'none'` CSP, SRI-pinned CDN script with a vendored fallback, no network egress at runtime |
 
 ## 2. Demonstrated Competencies & Technical Skills
@@ -199,7 +199,7 @@ npm run validate     # html-validate on index.html
 
 | Check | Result |
 | --- | --- |
-| `npm test` | **95 tests passing**, 5 files, ~1.9 s |
+| `npm test` | **103 tests passing**, 5 files, ~1.9 s |
 | `npm run coverage` | **99.78% statements**, 96.71% branches, 100% functions on `src/{rules,generate,detect,correlate,report}.js` |
 | `npm run lint` | clean, 0 errors, 0 warnings |
 | `npm run validate` | clean |
