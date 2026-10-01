@@ -32,7 +32,7 @@ Worth knowing: rebuilding this exposed three defects in the earlier version — 
 
 ## 6. Evidence
 
-Measured in continuous integration on the current main branch: 95 unit tests passing, 99.8% statement coverage, lint and HTML validation clean, CodeQL and dependency scanning enabled. Headless-browser smoke test: zero console errors, guided tour opens and closes correctly. Security posture: Content Security Policy with `default-src 'none'`, Subresource Integrity on the one external library, and a vendored fallback so the page still works if the CDN is unreachable.
+Measured in continuous integration on the current main branch: 103 unit tests passing, 99.8% statement coverage, lint and HTML validation clean, CodeQL and dependency scanning enabled. Headless-browser smoke test: zero console errors, guided tour opens and closes correctly. Security posture: Content Security Policy with `default-src 'none'`, Subresource Integrity on the one external library, and a vendored fallback so the page still works if the CDN is unreachable.
 
 ## 7. What it would take to run this in production
 
